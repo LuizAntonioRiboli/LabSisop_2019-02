@@ -25,3 +25,7 @@ $COMPILER -o $BUILDROOT_DIR/output/target/bin/syscall_test $BUILDROOT_DIR/custom
 
 # tutorial 2.3: Meu primeiro driver
 make -C $BASE_DIR/../modules/simple_driver/
+
+#tutorial 2.4 e T2:
+make -C $BASE_DIR/../modules/t2-escalonador/
+

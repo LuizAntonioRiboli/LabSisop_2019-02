@@ -1,0 +1,1 @@
+cmd_/home/labredes/linuxdistro/buildroot/modules/t2-escalonador/built-in.o :=  rm -f /home/labredes/linuxdistro/buildroot/modules/t2-escalonador/built-in.o; ar rcSTPD /home/labredes/linuxdistro/buildroot/modules/t2-escalonador/built-in.o
