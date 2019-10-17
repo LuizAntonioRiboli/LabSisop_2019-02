@@ -1,5 +1,10 @@
+
 /*
  * Simple disc I/O generator
+ *
+ * Nomes: Luiz Antonio Riboli e Willian Dias
+ * Laboratorio de Sistemas Operacionais - T2 - 2019/02
+ * Professor: Miguel Gomes Xavier
  */
 
 #include <stdio.h>
@@ -14,8 +19,12 @@
 
 int main(){
 	int ret, fd, pid, i;
+    int lim, factor, flag;
 	unsigned int pos;
 	char buf[BUFFER_LENGTH];
+
+    // Cria 5 forks
+    for (i = 0; i < 4; i++) fork();
 
 	printf("Starting sector read example...\n");
 
@@ -32,16 +41,19 @@ int main(){
 
 	strcpy(buf, "hello world!");
 
-	
+    // Faz parent e child(ren) esperarem
+    usleep(2000000);
 
-	for (i = 0; i < 50; i++){
-		printf("entrou no for \n");
+    // Faz leitura de setores aleatórios
+	for (i = 0; i < 10; i++){
 		pos = (rand() % (DISK_SZ >> 9));
+		//printf("Sector: %lu\n", pos);
 		/* Set position */
 		lseek(fd, pos * 512, SEEK_SET);
 		/* Peform read. */
 		read(fd, buf, 100);
 	}
+
 	close(fd);
 
 	return 0;

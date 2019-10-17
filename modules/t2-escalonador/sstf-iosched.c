@@ -2,6 +2,10 @@
  * SSTF IO Scheduler
  *
  * For Kernel 4.13.9
+ *
+ * Nomes: Luiz Antonio Riboli e Willian Dias
+ * Laboratorio de Sistemas Operacionais - T2 - 2019/02
+ * Professor: Miguel Gomes Xavier
  */
 
 #include <linux/blkdev.h>
@@ -10,6 +14,9 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/init.h>
+
+// Setor atendido no último dispatch
+unsigned long long lastSector;
 
 /* SSTF data structure. */
 struct sstf_data {
@@ -24,21 +31,43 @@ static void sstf_merged_requests(struct request_queue *q, struct request *rq,
 
 /* Esta função despacha o próximo bloco a ser lido. */
 static int sstf_dispatch(struct request_queue *q, int force){
+
 	struct sstf_data *nd = q->elevator->elevator_data;
 	char direction = 'R';
-	struct request *rq;
-
-	/* Aqui deve-se retirar uma requisição da fila e enviá-la para processamento.
-	 * Use como exemplo o driver noop-iosched.c. Veja como a requisição é tratada.
-	 *
-	 * Antes de retornar da função, imprima o sector que foi atendido.
-	 */
+	struct request *rq, *actualRequest, *newRequest;
+    unsigned long long newDist, minDist, clstSector, currentSector;
 
 	rq = list_first_entry_or_null(&nd->queue, struct request, queuelist);
 	if (rq) {
-		list_del_init(&rq->queuelist);
-		elv_dispatch_sort(q, rq);
-		printk(KERN_EMERG "[SSTF] dsp %c %lu\n", direction, blk_rq_pos(rq));
+
+        minDist = ULLONG_MAX;
+        newRequest = rq;
+        clstSector = NULL;
+
+        list_for_each_entry(actualRequest, &nd->queue, queuelist){
+
+            currentSector = blk_rq_pos(actualRequest);
+            newDist = lastSector - currentSector;
+
+            if (newDist < 0) newDist *= -1;
+
+            if (newDist < minDist){
+
+                minDist = newDist;
+                clstSector = currentSector;
+                newRequest = actualRequest;
+            }
+        }
+
+		//list_del_init(&rq->queuelist);
+        	list_del(&newRequest->queuelist);
+
+		//elv_dispatch_sort(q, rq);
+		elv_dispatch_sort(q, newRequest);
+
+        	lastSector = clstSector;
+
+		printk(KERN_EMERG "[SSTF] dsp %c %lu\n", direction, blk_rq_pos(newRequest));
 
 		return 1;
 	}
