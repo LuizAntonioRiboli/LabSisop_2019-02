@@ -32,5 +32,25 @@ make -C $BASE_DIR/../modules/t2-escalonador/
 
 # Tutorial 3.1: Depurando o Kernel com Ftrace - parte 1 (v1.1)
 cp $BASE_DIR/../custom-scripts/fstab $BASE_DIR/target/etc
-#chmod +x $BASE_DIR/custom-scripts/fstab 
+chmod +x $BASE_DIR/target/etc/fstab 
+
+# Tutorial 3.2: Depurando o Kernel com Ftrace - parte 2 (v1.1)
+make -C $BASE_DIR/../simple_tracer/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
